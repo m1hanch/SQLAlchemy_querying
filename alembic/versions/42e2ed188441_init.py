@@ -1,8 +1,8 @@
 """Init
 
-Revision ID: 0f9b91acdb3f
+Revision ID: 42e2ed188441
 Revises: 
-Create Date: 2023-10-31 14:30:34.572385
+Create Date: 2023-11-01 19:02:40.043736
 
 """
 from typing import Sequence, Union
@@ -12,7 +12,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision: str = '0f9b91acdb3f'
+revision: str = '42e2ed188441'
 down_revision: Union[str, None] = None
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
@@ -34,23 +34,23 @@ def upgrade() -> None:
     sa.Column('id', sa.Integer(), autoincrement=True, nullable=False),
     sa.Column('full_name', sa.String(), nullable=False),
     sa.Column('date_of_birth', sa.DateTime(), nullable=False),
-    sa.Column('group_id', sa.Integer(), nullable=True),
+    sa.Column('group_id', sa.Integer(), nullable=False),
     sa.ForeignKeyConstraint(['group_id'], ['groups.id'], ondelete='CASCADE'),
     sa.PrimaryKeyConstraint('id')
     )
     op.create_table('subjects',
     sa.Column('id', sa.Integer(), autoincrement=True, nullable=False),
     sa.Column('subject_name', sa.String(), nullable=False),
-    sa.Column('teacher_id', sa.Integer(), nullable=True),
+    sa.Column('teacher_id', sa.Integer(), nullable=False),
     sa.ForeignKeyConstraint(['teacher_id'], ['teachers.id'], ondelete='CASCADE'),
     sa.PrimaryKeyConstraint('id')
     )
     op.create_table('grades',
     sa.Column('id', sa.Integer(), autoincrement=True, nullable=False),
-    sa.Column('student_id', sa.Integer(), nullable=True),
-    sa.Column('subject_id', sa.Integer(), nullable=True),
-    sa.Column('grade', sa.Integer(), nullable=True),
-    sa.Column('date_received', sa.Date(), nullable=False),
+    sa.Column('student_id', sa.Integer(), nullable=False),
+    sa.Column('subject_id', sa.Integer(), nullable=False),
+    sa.Column('grade', sa.Integer(), nullable=False),
+    sa.Column('date_received', sa.DateTime(), nullable=False),
     sa.ForeignKeyConstraint(['student_id'], ['students.id'], ondelete='CASCADE'),
     sa.ForeignKeyConstraint(['subject_id'], ['subjects.id'], ondelete='CASCADE'),
     sa.PrimaryKeyConstraint('id')

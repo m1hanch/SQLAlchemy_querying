@@ -1,44 +1,48 @@
-from datetime import datetime
+from sqlalchemy import CheckConstraint
+from sqlalchemy.orm import relationship, Mapped, mapped_column, sessionmaker, declarative_base
+from sqlalchemy.sql.schema import ForeignKey
+from sqlalchemy.sql.sqltypes import DateTime
+from sqlalchemy.engine import create_engine
 
-from sqlalchemy import Column, Integer, String, Boolean, CheckConstraint
-from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import relationship
-from sqlalchemy.sql.schema import ForeignKey, Table
-from sqlalchemy.sql.sqltypes import DateTime, Date
 
 Base = declarative_base()
-
 class Groups(Base):
     __tablename__ = 'groups'
-    id = Column(Integer, primary_key=True, autoincrement=True)
-    name = Column(String, nullable=False)
+    id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
+    name: Mapped[str] = mapped_column(nullable=False)
 
 class Teachers(Base):
     __tablename__ = 'teachers'
-    id = Column(Integer, autoincrement=True, primary_key=True)
-    full_name = Column(String, nullable=False)
+    id: Mapped[int] = mapped_column(autoincrement=True, primary_key=True)
+    full_name: Mapped[str] = mapped_column(nullable=False)
 
 class Students(Base):
     __tablename__ = 'students'
-    id = Column(Integer, primary_key=True, autoincrement=True)
-    full_name = Column(String, nullable=False)
-    date_of_birth = Column(DateTime, nullable=False)
-    group_id = Column(Integer, ForeignKey(Groups.id, ondelete='CASCADE'))
+    id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
+    full_name: Mapped[str] = mapped_column(nullable=False)
+    date_of_birth = mapped_column(DateTime, nullable=False)
+    group_id: Mapped[int] = mapped_column(ForeignKey(Groups.id, ondelete='CASCADE'))
+    group = relationship('Groups')
 
 class Subjects(Base):
     __tablename__ = 'subjects'
-    id = Column(Integer, primary_key=True, autoincrement=True)
-    subject_name = Column(String, nullable=False)
-    teacher_id = Column(Integer, ForeignKey(Teachers.id, ondelete='CASCADE'))
+    id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
+    subject_name: Mapped[str] = mapped_column(nullable=False)
+    teacher_id: Mapped[int] = mapped_column(ForeignKey(Teachers.id, ondelete='CASCADE'))
+    teacher = relationship('Teachers')
 
 class Grades(Base):
     __tablename__ = 'grades'
-    id = Column(Integer, primary_key=True, autoincrement=True)
-    student_id = Column(Integer, ForeignKey(Students.id, ondelete='CASCADE'))
-    subject_id = Column(Integer, ForeignKey(Subjects.id, ondelete='CASCADE'))
-    grade = Column(Integer, CheckConstraint('grade>=0 and grade<=100'))
-    date_received = Column(Date, nullable=False)
+    id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
+    student_id: Mapped[int] = mapped_column(ForeignKey(Students.id, ondelete='CASCADE'))
+    subject_id: Mapped[int] = mapped_column(ForeignKey(Subjects.id, ondelete='CASCADE'))
+    grade: Mapped[int] = mapped_column(CheckConstraint('grade>=0 and grade<=100'))
+    date_received = mapped_column(DateTime, nullable=False)
+    student = relationship('Students')
+    subject = relationship('Subjects')
 
+
+#Base.metadata.create_all(engine)
 
 
 

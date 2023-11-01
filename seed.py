@@ -1,8 +1,10 @@
 import logging
 
-import faker
+from faker import Faker
 from random import randint
-from create_db import session
+from db import session
+from models import Students, Subjects, Teachers, Groups, Grades
+
 from models import Grades, Groups, Subjects, Students, Teachers
 from psycopg2 import DatabaseError
 import psycopg2
@@ -16,76 +18,25 @@ NUMBER_OF_TEACHERS = 4
 NUMBER_OF_GRADES = 20
 
 
-def generate_fake_data(n_groups, n_students, n_subjects, n_teachers, n_grades):
-    groups = []
-    students = []  # contains fake students' names
-    date_of_birth = []  # contains fake date of birth
-    subjects = ['Mathematics', 'History', 'Computer Science', 'Biology', 'Chemistry', 'Literature', 'Physics',
-                'Geography']
-    teachers = []  # contains fake teachers' names
-    grades = []  # contains fake grades and its dates
-    dates_this_month = []
-    data = faker.Faker()
-
-    for i in range(n_groups):
-        groups.append(chr(65 + i))
-
-    for i in range(n_students):
-        students.append(data.name())
-        date_of_birth.append(data.date_of_birth())
-
-    for i in range(n_teachers):
-        teachers.append(data.name())
-
-    for i in range(n_students):
-        for j in range(n_subjects):
-            for k in range(n_grades):
-                grades.append(randint(0, 100))
-                dates_this_month.append(data.date_this_month())
-
-    return teachers, groups, students, subjects, grades, date_of_birth, dates_this_month
 
 
-def prepare_data(teachers, groups, students, subjects, grades, date_of_birth, dates_this_month):
-    for_teachers = []
-    for teacher in teachers:
-        for_teachers.append((teacher,))
+def insert_data():
+    data = Faker()
+    for i in range(NUMBER_OF_TEACHERS):
+        teacher = Teachers(full_name=data.name())
+        session.add(teacher)
+    session.commit()
 
-    for_groups = []
-    for group in groups:
-        for_groups.append((group,))
+    for i in range(NUMBER_OF_GROUPS):
+        group = Groups(name=chr(65 + i))
+        session.add(group)
+    session.commit()
 
-    for_students = []
-    for i in range(len(students)):
-        for_students.append((students[i], date_of_birth[i], (i % 3)+1))
+    for i in range(NUMBER_OF_STUDENTS):
+        student = Students(fullname=data.name(), date_of_birth=data.date_of_birth())
 
-    for_subjects = []
-    for subject in subjects:
-        for_subjects.append((subject, randint(1, len(teachers))))
-
-    for_grades = []
-    grade_iterator = 0
-    for subject in range(1, len(subjects) + 1):
-        for student in range(1, len(students) + 1):
-            for i in range(NUMBER_OF_GRADES):
-                for_grades.append((student, subject, grades[grade_iterator], dates_this_month[grade_iterator]))
-                grade_iterator += 1
-
-    return for_teachers, for_groups, for_students, for_subjects, for_grades
-
-
-def insert_data(teachers, groups, students, subjects, grades):
 
 
 
 if __name__ == '__main__':
-    teachers, groups, students, subject, grades, d_birth, d_month = generate_fake_data(NUMBER_OF_GROUPS,
-                                                                                      NUMBER_OF_STUDENTS,
-                                                                                      NUMBER_OF_SUBJECTS,
-                                                                                      NUMBER_OF_TEACHERS,
-                                                                                      NUMBER_OF_GRADES)
-
-    teachers, groups, students, subject, grades = prepare_data(teachers, groups, students, subject, grades, d_birth,
-                                                              d_month)
-
-    insert_data(teachers, groups, students, subject, grades)
+    #insert_data(teachers, groups, students, subject, grades)
