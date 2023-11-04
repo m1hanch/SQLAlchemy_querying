@@ -361,7 +361,22 @@ files = [
     {file = "typing_extensions-4.8.0.tar.gz", hash = "sha256:df8e4339e9cb77357558cbdbceca33c303714cf861d1eef15e1070055ae8b7ef"},
 ]
 
+[[package]]
+name = "uri"
+version = "2.0.1"
+description = "A type to represent, query, and manipulate a Uniform Resource Identifier."
+optional = false
+python-versions = "*"
+files = [
+    {file = "uri-2.0.1-py2.py3-none-any.whl", hash = "sha256:df7df5653c8d38cf8a394db0d86728fcbfc6b4ecc62522a7972e078c1cace963"},
+    {file = "uri-2.0.1.tar.gz", hash = "sha256:b56fa1ca7fdbb43d919d921c360a145358529d5430dec90d46a7b902179529b9"},
+]
+
+[package.extras]
+development = ["pre-commit", "pytest", "pytest-cov", "pytest-flakes", "pytest-isort"]
+http = ["requests"]
+
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.11"
-content-hash = "fcbe25758d76c82b7b2c05add19c2801782157ddf08469eb95b663aa5e387f5a"
+content-hash = "38873391e22233ab4dbe8e41ed63a9a4332e23b03b2e40d73c8a47e9f0f439d9"
